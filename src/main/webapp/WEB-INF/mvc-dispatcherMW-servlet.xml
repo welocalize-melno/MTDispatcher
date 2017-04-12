@@ -1,0 +1,119 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:property-placeholder location="classpath:/properties/mt.config.properties" />
+
+	<context:component-scan base-package="com.globalsight.dispatcher" />
+
+	<!-- The mvc static resources -->
+ 	<mvc:resources mapping="/resources/**" location="/resources/" />
+ 	<mvc:resources mapping="/images/**" location="/resources/images/" />
+ 	
+	<mvc:annotation-driven />
+    
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
+		p:favorParameter="true" p:defaultContentType="application/json"
+		p:ignoreAcceptHeader="true" p:order="1">
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<!--  -->
+				<entry key="xml" value="application/xml" />		
+			</map>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<!-- JSON View -->
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+
+				<!-- XML View -->
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+							<property name="classesToBeBound">
+								<list>
+									<value>com.globalsight.dispatcher.bo.MTResult</value>
+								</list>
+							</property>
+						</bean>
+					</constructor-arg>
+				</bean>		
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+		
+	 
+	<mvc:interceptors>
+   <mvc:interceptor>
+     <mvc:mapping path="/home/error.htm" />
+     <bean class="com.globalsight.dispatcher.interceptor.ErrorPageInterceptor" />
+   </mvc:interceptor>
+</mvc:interceptors>
+
+	
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
+		<property name="driverClassName" value="${database.driverClassName}" />
+		<property name="url" value="${database.url}" />
+		<property name="username" value="${database.username}" />
+		<property name="password" value="${database.password}" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="testOnBorrow" value="true" />
+		<!-- The maximum number of active connections allowed. -->
+		<property name="maxActive" value="20" /> 
+		<!-- The maximum amount of time to wait on another connection. (30 seconds) -->
+		<property name="maxWait" value="30000" />
+		<!-- Time to sleep between idle connection eviction times. (5 minutes) -->
+		<property name="timeBetweenEvictionRunsMillis" value="300000"/>
+	</bean>
+	
+	
+	<!-- Mysql Transaction Manager -->
+	<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Hibernate session factory -->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="mappingLocations" value="classpath*:hibernate/*.hbm.xml"/>
+		
+		<property name="hibernateProperties">
+			<props>
+				<!-- <prop key="hibernate.connection.useUnicode">true</prop>
+           		 <prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+            	<prop key="hibernate.connection.charSet">UTF-8</prop> -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="map"></prop>
+				<prop key="hibernate.query.substitutions">true 'Y', false 'N'</prop>
+			</props>
+
+		</property>
+	</bean>
+	
+</beans>
+
+
+

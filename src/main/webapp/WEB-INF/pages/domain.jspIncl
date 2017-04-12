@@ -1,0 +1,49 @@
+<!-- Domain Modal -->
+  <div class="modal fade" id="domainModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title text-center" >Add Domain</h4>
+        </div>
+        <div class="modal-body"> 
+    
+    		 <form id="domainModalForm" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Domain Name : </label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" name="domainName" id="domainId">
+                        </div>
+                    </div>
+                    <div id="domainModalError" class="marginLeft200" style="color:red;">
+                </form> 
+        </div>
+        <div class="modal-footer">
+        	 <div class="form-group col-xs-5 col-xs-offset-3">
+        	 <img src="../images/ajax-loader_blue.gif" class="hide" id="loading">
+        	 
+          <button type="button" class="btn btn-default btn-info" id="addDomain" onClick="fnAddDomain()">Add</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+  
+   </div>
+   <!-- Domain Success/Failure Msg Modal -->
+  <div class="modal fade" id="successMsgModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+         <div class="modal-body">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <p></p>
+         </div>
+       
+      </div>
+      
+    </div>
+  </div>
