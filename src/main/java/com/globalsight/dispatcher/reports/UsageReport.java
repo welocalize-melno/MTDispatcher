@@ -13,9 +13,9 @@ import java.util.Date;
 public class UsageReport {
 	
 	static String filePath = "D:\\Reports\\";
-	static String driver = "jdbc:mysql://192.168.1.118:3306/johndeere";
-	static String username = "root";
-	static String password = "Mfiospi#0214";
+	static String driver = "";
+	static String username = "";
+	static String password = "";
 	static String todayDate = getCurrentDate();
 	static String delimiter = "|";
 	
